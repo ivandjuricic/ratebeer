@@ -7,6 +7,7 @@ from ratebeer import rb_exceptions
 
 
 class TestBeer(unittest.TestCase):
+
     def test_beer(self):
         ''' Make sure the results for a beer contain the expected data '''
         results = RateBeer().beer("/beer/new-belgium-tour-de-fall/279122/")
@@ -62,6 +63,14 @@ class TestBeer(unittest.TestCase):
                   'brewery': u'Brugghús Steðja',
                   'brewery_url': u'/brewers/brugghus-steoja/15310/',
                   'style': u'Spice/Herb/Vegetable'}
+        self.assertTrue(all(item in superset.items() for item in subset.items()))
+
+    def test_get_image(self):
+        results = RateBeer().beer("/beer/new-belgium-tour-de-fall/279122/")
+        superset = results
+        subset = {
+            'image': 'http://res.cloudinary.com/ratebeer/image/upload/w_120,c_limit,q_85,d_no%20image.jpg/beer_279122.jpg'
+        }
         self.assertTrue(all(item in superset.items() for item in subset.items()))
 
 

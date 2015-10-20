@@ -151,7 +151,11 @@ class Beer(object):
                     meta_data = float(meta_data)
             except ValueError:
                 pass
+
             setattr(self, match, meta_data)
+
+        self.image = soup_rows[1].img["src"]
+        setattr(self, "image", self.image)
 
         info = soup_rows[1].tr.find_all('td')
 
