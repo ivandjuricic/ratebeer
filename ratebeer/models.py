@@ -51,12 +51,13 @@ class Beer(object):
         num_ratings (int): the number of reviews*
         overall_rating (int): the overall rating (out of 100)
         seasonal (string): which season the beer is produced in. Acts as a catch-all for
-            any kind of miscellanious brew information.*
+            any kind of miscellaneous brew information.*
         style (string): beer style
         style_rating (int): rating of the beer within its style (out of 100)
         url (string): the beer's url
         weighted_avg (float): the beer rating average, weighted using some unknown
             algorithm (out of 5)*
+        image (string): url to image on beer page
 
         * may not be available for all beers
 
@@ -154,6 +155,7 @@ class Beer(object):
 
             setattr(self, match, meta_data)
 
+        # populate with image url also
         self.image = soup_rows[1].img["src"]
         setattr(self, "image", self.image)
 
@@ -259,6 +261,28 @@ class Beer(object):
                 yield Review(review_soup)
 
             page_number += 1
+
+    def get_reviews_short_generator(self):
+        """
+        Returns list of 10 reviews dicts sorted by most recent
+
+        """
+        if not self._has_fetched:
+            self._populate()
+        reviews = self.get_reviews()
+        self.reviews_short = []
+        for i, review in enumerate(reviews):
+            if i < 10:
+                self.reviews_short.append({"user_name": review.user_name,
+                                    "overall": review.overall,
+                                    "aroma": review.aroma,
+                                    "appearance": review.appearance,
+                                    "taste": review.taste,
+                                    "palate": review.palate,
+                                    "text": review.text})
+            else:
+                break
+        return self.reviews_short
 
 
 class Review(object):

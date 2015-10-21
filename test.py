@@ -8,6 +8,17 @@ from ratebeer import rb_exceptions
 
 class TestBeer(unittest.TestCase):
 
+    def test_review(self):
+        results = RateBeer().get_beer("/beer/thornbridge-alchemy-x/144893/").get_reviews_short()
+        superset = results[0]
+        subset = {"aroma": 6,
+                  "appearance": 4,
+                  "taste": 7,
+                  "palate": 5,
+                  "overall": 16
+                  }
+        self.assertTrue(all(item in superset.items() for item in subset.items()))
+
     def test_beer(self):
         ''' Make sure the results for a beer contain the expected data '''
         results = RateBeer().beer("/beer/new-belgium-tour-de-fall/279122/")
