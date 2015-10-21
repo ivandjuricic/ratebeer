@@ -262,7 +262,7 @@ class Beer(object):
 
             page_number += 1
 
-    def get_reviews_short_generator(self):
+    def get_reviews_short(self):
         """
         Returns list of 10 reviews dicts sorted by most recent
 
