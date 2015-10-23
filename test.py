@@ -32,7 +32,17 @@ class TestBeer(unittest.TestCase):
         self.assertTrue(all(item in superset.items() for item in subset.items()))
 
     def test_beer_with_no_ratings(self):
-        results = RateBeer().beer("/beer/abc-a-berry-christmas/161043/")
+        results = RateBeer().beer("/beer/abc-a-berry-christmas/161043")
+        self.assertIsNotNone(results)
+        superset = results
+        subset = {'name': u'ABC A Berry Christmas',
+                  'brewery': u'ABC',
+                  'brewery_url': u'/brewers/abc/10095/',
+                  'style': u'Premium Bitter/ESB'}
+        self.assertTrue(all(item in superset.items() for item in subset.items()))
+
+    def test_url_no_backslash(self):
+        results = RateBeer().beer("/beer/161043")
         self.assertIsNotNone(results)
         superset = results
         subset = {'name': u'ABC A Berry Christmas',

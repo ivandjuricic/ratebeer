@@ -65,7 +65,11 @@ class Beer(object):
     """
     def __init__(self, url, fetch=None):
         """Initialize with URL and do not fetch"""
-        self.url = url
+        if url[-1] == "/":
+            self.url = url
+        else:
+            self.url = url + "/"
+
         if fetch is None:
             fetch = False
         if fetch:
