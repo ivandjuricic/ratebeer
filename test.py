@@ -31,6 +31,16 @@ class TestBeer(unittest.TestCase):
                   'ibu': 38}
         self.assertTrue(all(item in superset.items() for item in subset.items()))
 
+    def test_beer_with_no_ratings(self):
+        results = RateBeer().beer("/beer/abc-a-berry-christmas/161043/")
+        self.assertIsNotNone(results)
+        superset = results
+        subset = {'name': u'ABC A Berry Christmas',
+                  'brewery': u'ABC',
+                  'brewery_url': u'/brewers/abc/10095/',
+                  'style': u'Premium Bitter/ESB'}
+        self.assertTrue(all(item in superset.items() for item in subset.items()))
+
     def test_beer_404(self):
         ''' Checks to make sure that we appropriately raise a page not found '''
         rb = RateBeer()

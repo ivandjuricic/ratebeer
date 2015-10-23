@@ -69,7 +69,7 @@ class Beer(object):
         if fetch is None:
             fetch = False
         if fetch:
-            self._populate()
+            self._populate
         self._has_fetched = fetch
 
     def __getattr__(self, item):
@@ -77,7 +77,7 @@ class Beer(object):
         if item in self.__dict__.keys():
             return self.__dict__[item]
         elif not self._has_fetched:
-            self._populate()
+            self._populate
             return getattr(self, item)
         raise AttributeError('{0} has no attribute {1}'.format(type(self), item))
 
@@ -102,6 +102,7 @@ class Beer(object):
         """Provide a nicely formatted representation"""
         return self.name
 
+    @property
     def _populate(self):
         soup = soup_helper._get_soup(self.url)
         # check for 404s
@@ -122,8 +123,20 @@ class Beer(object):
 
         # get beer meta information
         # grab the html and split it into a keyword and value
+        brew_info_divs = soup_rows[1].find_all('table')[0].find_all('div')
         brew_info_html = soup_rows[1].find_all('td')[1].div.small
         brew_info = [s.split(': ') for s in brew_info_html.text.split(u'\xa0\xa0')]
+
+        # get ratings
+        if "No Score" in brew_info_divs[0].text:
+            self.overall_rating = None
+            self.style_rating = None
+            self.style = brew_info_divs[2].find_all('a')[1].text
+        else:
+            self.overall_rating = int(brew_info_divs[0].text[-2:])
+            self.style_rating = int(brew_info_divs[3].text[:2])
+            self.style = brew_info_divs[4].find_all('a')[1].text
+
         keyword_lookup = {
             "RATINGS": "num_ratings",
             "MEAN": "mean_rating",
@@ -175,19 +188,6 @@ class Beer(object):
             self.brewed_at = brewed_at.text.strip()
             self.brewed_at_url = brewed_at.get('href')
 
-        # get ratings
-        ratings = info[0].findAll('div')
-        if len(ratings) > 1:
-            overall_rating = ratings[1].findAll('span')
-            style_rating = ratings[3].findAll('span')
-        else:
-            overall_rating = None
-            style_rating = None
-        if overall_rating and overall_rating[1].text != 'n/a':
-            self.overall_rating = int(overall_rating[1].text)
-        if style_rating and style_rating[0].text != 'n/a':
-            self.style_rating = int(style_rating[0].text)
-
         # get the beer style
         if brewery_info[3]:
             self.style = brewery_info[3].text.strip()
@@ -213,10 +213,8 @@ class Beer(object):
             [s.extract() for s in description('small')]
             self.description = ' '.join([s for s in description.strings]).strip()
 
-        # get name
-        self.name = soup_rows[0].find_all('td')[1].h1.text.strip()
+        self.name = soup.h1.text
         self._has_fetched = True
-
         return self
 
     def get_reviews(self, review_order="most recent"):
@@ -236,7 +234,7 @@ class Beer(object):
         """
 
         if not self._has_fetched:
-            self._populate()
+            self._populate
 
         review_order = review_order.lower()
         url_codes = {
@@ -268,7 +266,7 @@ class Beer(object):
 
         """
         if not self._has_fetched:
-            self._populate()
+            self._populate
         reviews = self.get_reviews()
         self.reviews_short = []
         for i, review in enumerate(reviews):
