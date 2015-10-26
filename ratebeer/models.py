@@ -109,7 +109,7 @@ class Beer(object):
     @property
     def _populate(self):
         soup = soup_helper._get_soup(self.url)
-        # check for 404s
+        # check for 404sW
         try:
             soup_rows = soup.find('div', id='container').find('table').find_all('tr')
         except AttributeError:
@@ -137,9 +137,16 @@ class Beer(object):
             self.style_rating = None
             self.style = brew_info_divs[2].find_all('a')[1].text
         else:
-            self.overall_rating = int(brew_info_divs[0].text[-2:])
-            self.style_rating = int(brew_info_divs[3].text[:2])
-            self.style = brew_info_divs[4].find_all('a')[1].text
+            try:
+                self.overall_rating = int(brew_info_divs[0].text[-2:])
+            except:
+                self.overall_rating = int(brew_info_divs[0].text[-1:])
+            try:
+                self.style_rating = int(brew_info_divs[3].text[:2])
+            except:
+                self.style_rating = int(brew_info_divs[3].text[:1])
+
+                self.style = brew_info_divs[4].find_all('a')[1].text
 
         keyword_lookup = {
             "RATINGS": "num_ratings",
@@ -216,6 +223,7 @@ class Beer(object):
             # strip ads
             [s.extract() for s in description('small')]
             self.description = ' '.join([s for s in description.strings]).strip()
+
 
         self.name = soup.h1.text
         self._has_fetched = True

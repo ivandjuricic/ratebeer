@@ -19,6 +19,14 @@ class TestBeer(unittest.TestCase):
                   }
         self.assertTrue(all(item in superset.items() for item in subset.items()))
 
+    def test_desc(self):
+        result = RateBeer().beer("/beer/thornbridge-wild-raven/113934/")['description']
+        print result
+        superset = "Cask and bottles; semi-regular."
+
+        self.assertTrue(superset in result)
+
+
     def test_beer(self):
         ''' Make sure the results for a beer contain the expected data '''
         results = RateBeer().beer("/beer/new-belgium-tour-de-fall/279122/")
