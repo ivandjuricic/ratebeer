@@ -137,16 +137,12 @@ class Beer(object):
             self.style_rating = None
             self.style = brew_info_divs[2].find_all('a')[1].text
         else:
-            try:
-                self.overall_rating = int(brew_info_divs[0].text[-2:])
-            except:
-                self.overall_rating = int(brew_info_divs[0].text[-1:])
-            try:
-                self.style_rating = int(brew_info_divs[3].text[:2])
-            except:
-                self.style_rating = int(brew_info_divs[3].text[:1])
+            overalltxt = brew_info_divs[0].text
+            self.overall_rating = int(brew_info_divs[0].text[-sum(c.isdigit() for c in overalltxt):])
+            styleratingtxt = brew_info_divs[3].text
+            self.style_rating = int(brew_info_divs[3].text[:sum(c.isdigit() for c in overalltxt):])
 
-                self.style = brew_info_divs[4].find_all('a')[1].text
+            self.style = brew_info_divs[4].find_all('a')[1].text
 
         keyword_lookup = {
             "RATINGS": "num_ratings",

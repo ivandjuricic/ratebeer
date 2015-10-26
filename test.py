@@ -21,7 +21,6 @@ class TestBeer(unittest.TestCase):
 
     def test_desc(self):
         result = RateBeer().beer("/beer/thornbridge-wild-raven/113934/")['description']
-        print result
         superset = "Cask and bottles; semi-regular."
 
         self.assertTrue(superset in result)
@@ -38,6 +37,14 @@ class TestBeer(unittest.TestCase):
                   'style': u'American Pale Ale',
                   'ibu': 38}
         self.assertTrue(all(item in superset.items() for item in subset.items()))
+
+    def test_beer_single_score(self):
+
+        results = RateBeer().beer("/beer//jelen-pivo/12285/")
+        superset = results
+        subset = {'name': u'Jelen Pivo'}
+        self.assertTrue(all(item in superset.items() for item in subset.items()))
+
 
     def test_beer_with_no_ratings(self):
         results = RateBeer().beer("/beer/abc-a-berry-christmas/161043")
